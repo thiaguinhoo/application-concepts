@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import config from 'config';
+
+const secretKey: string = config.get('secretKey');
 
 declare module 'jsonwebtoken' {
   export interface UserPayload extends JwtPayload {
@@ -18,7 +21,7 @@ export default async function (
     if (/^Bearer$/.test(bearer)) {
       try {
         const decoded = await (<jwt.UserPayload>(
-          jwt.verify(jwtToken, process.env.SECRET_KEY as string)
+          jwt.verify(jwtToken, secretKey)
         ));
         if (decoded.email) {
           req.userEmail = decoded.email;
